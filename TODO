@@ -1,0 +1,13 @@
+here's what I've found:
+  * ultimately, key generation based on password is the slow part (should've suspected this)
+  * my stuff runs pretty fucking fast (< 1ms for 800 attempts)
+  * at that rate, assuming keys have been generated (see below), there's this math:
+  	attempts = 800000/s * 4 threads * s/m * m/h * h/d * d/w, charset=62, log<62>(attempts) ~= 6.85
+  	^ that means we'll have almost attempted all possible 6-digit passwords for a 62-character set in 1 week
+  	^ in ~3 weeks we'll have attempted all possible 7-digit passwords
+
+next, if really serious:
+  * find a way to set CryptData externally through dll API
+  * gen key data (byte[16] x2) & store on disk, that is the primary cost of this, and the limiting factor (keys / s)
+  * efficiently process newly generated keys, ideally at the aforementioned speeds, or faster
+
